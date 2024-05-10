@@ -1,4 +1,3 @@
-```python
 import cv2
 import time
 import random
@@ -96,16 +95,16 @@ while (cap.isOpened()):
                     cv2.circle(img, index_pos, 18, slash_Color, -1)
                     slash = np.append(slash, index_pos)
 
-            while len(slash) >= slash_length:
-                slash = np.delete(slash, len(slash) - slash_length, 0)
+                    while len(slash) >= slash_length:
+                        slash = np.delete(slash, len(slash) - slash_length, 0)
 
-    for fruit in Fruits:
-        d = distance(index_pos, fruit["Curr_position"])
-        cv2.putText(img, str(d), fruit["Curr_position"], cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2, 3)
-        if (d < Fruit_Size):
-            Score = Score + 100
-            slash_Color = fruit["Color"]
-            Fruits.remove(fruit)
+                    for fruit in Fruits:
+                        d = distance(index_pos, fruit["Curr_position"])
+                        cv2.putText(img, str(d), fruit["Curr_position"], cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2, 3)
+                        if (d < Fruit_Size):
+                            Score = Score + 100
+                            slash_Color = fruit["Color"]
+                            Fruits.remove(fruit)
 
     if Score % 1000 == 0 and Score != 0:
         Difficulty_level = (Score / 1000) + 1
@@ -125,4 +124,37 @@ while (cap.isOpened()):
     FPS = int(1 / delta_Time)
     cv2.putText(img, "FPS : " + str(FPS), (int(w * 0.82), 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 250, 0), 2)
     cv2.putText(img, "Score: " + str(Score), (int(w * 0.35), 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 5)
-    cv2.putText(img, "Level: " + str(Difficulty_level), (int(w * 0.01), 90), cv2.FONT_HERSHEY_SIMPLEX, 1
+    cv2.putText(img, "Level: " + str(Difficulty_level), (int(w * 0.01), 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 150),
+                5)
+    cv2.putText(img, "Lives remaining : " + str(Lives), (200, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+
+    prev_Frame = curr_Frame
+
+    if not (game_Over):
+        if (time.time() > next_Time_to_Spawn):
+            Spawn_Fruits()
+            next_Time_to_Spawn = time.time() + (1 / Spawn_Rate)
+
+        Fruit_Movement(Fruits, Speed)
+
+    else:
+        cv2.putText(img, "GAME OVER", (int(w * 0.1), int(h * 0.6)), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 3)
+        cv2.putText(img, "Press 'R' to restart or 'Q' to quit", (int(w * 0.1), int(h * 0.7)), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                    (255, 255, 255), 2)
+        Fruits.clear()
+        cv2.imshow("img", img)
+        key = cv2.waitKey(0)
+        if key == ord('r') or key == ord('R'):
+            Lives = 15
+            Score = 0
+            game_Over = False
+        elif key == ord('q') or key == ord('Q'):
+            break
+
+    cv2.imshow("img", img)
+
+    if cv2.waitKey(5) & 0xFF == ord("q"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
