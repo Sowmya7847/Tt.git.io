@@ -1,0 +1,63 @@
+// script.js
+
+const apiKey = "182c9997c3mshc33650d0ee150bdp19fb8djsnedfb570a626e"; // Your RapidAPI Key
+const apiHost = "deezerdevs-deezer.p.rapidapi.com";
+
+// Map moods to Deezer genres (you can adjust these as needed)
+const moodToGenre = {
+  happy: "132", // Pop
+  calm: "129",  // Jazz
+  energetic: "152", // Rock
+  sad: "116",   // Blues
+};
+
+// Event listener for the "Get Music" button
+document.getElementById('get-music').addEventListener('click', async () => {
+  const mood = document.getElementById('mood').value;
+  const genre = document.getElementById('genre').value;
+
+  const genreId = moodToGenre[mood]; // Match mood to genre ID
+  const apiUrl = `https://${apiHost}/playlist/${genreId}`; // API endpoint for playlist by genre ID
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": apiHost,
+        "x-rapidapi-key": apiKey,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch music");
+
+    const data = await response.json();
+    displaySongs(data.tracks.data); // Pass track data to the display function
+  } catch (error) {
+    console.error("Error fetching songs:", error);
+    alert("Could not fetch songs. Try again later.");
+  }
+});
+
+// Function to display the fetched songs with audio
+function displaySongs(songs) {
+  const songList = document.getElementById('song-list');
+  songList.innerHTML = "";
+
+  if (!songs || songs.length === 0) {
+    songList.innerHTML = "<li>No songs found for the selected mood and genre.</li>";
+    return;
+  }
+
+  songs.forEach((song) => {
+    const listItem = document.createElement('li');
+
+    // Create audio element for playback
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = song.preview; // Use the Deezer preview URL
+
+    listItem.innerHTML = `<strong>${song.title}</strong> by ${song.artist.name}`;
+    listItem.appendChild(audio); // Append the audio element to the list item
+    songList.appendChild(listItem);
+  });
+}

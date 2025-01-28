@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Personalized Music</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>AI Personalized Music</h1>
+    <div class="controls">
+      <label for="mood">Select Mood:</label>
+      <select id="mood">
+        <option value="happy">Happy</option>
+        <option value="calm">Calm</option>
+        <option value="energetic">Energetic</option>
+        <option value="sad">Sad</option>
+      </select>
+
+      <label for="genre">Select Genre:</label>
+      <select id="genre">
+        <option value="pop">Pop</option>
+        <option value="rock">Rock</option>
+        <option value="jazz">Jazz</option>
+        <option value="classical">Classical</option>
+      </select>
+      <button id="get-music">Get Music</button>
+    </div>
+
+    <div class="results">
+      <h2>Recommended Songs</h2>
+      <ul id="song-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
